@@ -33,14 +33,26 @@ const Statistics = ({ counts }) => {
   const averageCounts = (counts.good - counts.bad) / allCounts;
   const positiveCounts = ((counts.good) / allCounts) * 100;
 
+  const statistics = () => {
+    if (allCounts > 0) {
+      return (
+        <>
+          <Stat name="good" value={counts.good} />
+          <Stat name="neutral" value={counts.neutral} />
+          <Stat name="bad" value={counts.bad} />
+          <Stat name="all" value={allCounts} />
+          <Stat name="average" value={averageCounts} />
+          <Stat name="positive" value={positiveCounts.toString() + '%'} />
+        </>
+      );
+    } else {
+      return <p>No feedback given</p>;
+    }
+  };
+
   return (
     <div>
-      <Stat name="good" value={counts.good} />
-      <Stat name="neutral" value={counts.neutral} />
-      <Stat name="bad" value={counts.bad} />
-      <Stat name="all" value={allCounts} />
-      <Stat name="average" value={averageCounts} />
-      <Stat name="positive" value={positiveCounts.toString() + '%'} />
+      {statistics()}
     </div>
   );
 };
