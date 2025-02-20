@@ -28,7 +28,7 @@ const Stat = ({ name, value }) => {
   );
 };
 
-const Stats = ({ counts }) => {
+const Statistics = ({ counts }) => {
   const allCounts = counts.good + counts.neutral + counts.bad;
   const averageCounts = (counts.good - counts.bad) / allCounts;
   const positiveCounts = ((counts.good) / allCounts) * 100;
@@ -65,7 +65,7 @@ const App = () => {
       <Title name="give feedback" />
       <FeedbackButtons onClickHandlers={onClicks} />
       <Title name="statistics" />
-      <Stats counts={{ good: good, neutral: neutral, bad: bad }} />
+      <Statistics counts={{ good: good, neutral: neutral, bad: bad }} />
     </>
   );
 };
