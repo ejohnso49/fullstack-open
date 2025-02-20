@@ -12,19 +12,12 @@ const Button = ({ name, onClick }) => {
   );
 };
 
-const FeedbackButtons = ({ onClickHandlers }) => {
+const StatisticLine = ({ name, value }) => {
   return (
-    <div>
-      <Button name="good" onClick={onClickHandlers.good} />
-      <Button name="neutral" onClick={onClickHandlers.neutral} />
-      <Button name="bad" onClick={onClickHandlers.bad} />
-    </div>
-  );
-};
-
-const Stat = ({ name, value }) => {
-  return (
-    <p>{name} {value}</p>
+    <tr>
+      <td>{name}</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 
@@ -36,14 +29,16 @@ const Statistics = ({ counts }) => {
   const statistics = () => {
     if (allCounts > 0) {
       return (
-        <>
-          <Stat name="good" value={counts.good} />
-          <Stat name="neutral" value={counts.neutral} />
-          <Stat name="bad" value={counts.bad} />
-          <Stat name="all" value={allCounts} />
-          <Stat name="average" value={averageCounts} />
-          <Stat name="positive" value={positiveCounts.toString() + '%'} />
-        </>
+        <table>
+          <tbody>
+            <StatisticLine name="good" value={counts.good} />
+            <StatisticLine name="neutral" value={counts.neutral} />
+            <StatisticLine name="bad" value={counts.bad} />
+            <StatisticLine name="all" value={allCounts} />
+            <StatisticLine name="average" value={averageCounts} />
+            <StatisticLine name="positive" value={positiveCounts.toString() + '%'} />
+          </tbody>
+        </table>
       );
     } else {
       return <p>No feedback given</p>;
@@ -66,16 +61,12 @@ const App = () => {
     return () => { setter(value + 1) };
   };
 
-  const onClicks = {
-    good: generateOnClick(good, setGood),
-    neutral: generateOnClick(neutral, setNeutral),
-    bad: generateOnClick(bad, setBad),
-  };
-
   return (
     <>
       <Title name="give feedback" />
-      <FeedbackButtons onClickHandlers={onClicks} />
+      <Button name="good" onClick={generateOnClick(good, setGood)} />
+      <Button name="neutral" onClick={generateOnClick(neutral, setNeutral)} />
+      <Button name="bad" onClick={generateOnClick(bad, setBad)} />
       <Title name="statistics" />
       <Statistics counts={{ good: good, neutral: neutral, bad: bad }} />
     </>
