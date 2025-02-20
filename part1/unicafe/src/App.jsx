@@ -22,26 +22,33 @@ const FeedbackButtons = ({ onClickHandlers }) => {
   );
 };
 
-const Stat = ({ name, count }) => {
+const Stat = ({ name, value }) => {
   return (
-    <p>{name} {count}</p>
+    <p>{name} {value}</p>
   );
 };
 
 const Stats = ({ counts }) => {
+  const allCounts = counts.good + counts.neutral + counts.bad;
+  const averageCounts = (counts.good - counts.bad) / allCounts;
+  const positiveCounts = ((counts.good) / allCounts) * 100;
+
   return (
     <div>
-      <Stat name="good" count={counts.good} />
-      <Stat name="neutral" count={counts.neutral} />
-      <Stat name="bad" count={counts.bad} />
+      <Stat name="good" value={counts.good} />
+      <Stat name="neutral" value={counts.neutral} />
+      <Stat name="bad" value={counts.bad} />
+      <Stat name="all" value={allCounts} />
+      <Stat name="average" value={averageCounts} />
+      <Stat name="positive" value={positiveCounts.toString() + '%'} />
     </div>
   );
 };
 
 const App = () => {
-  let [ good, setGood ] = useState(0);
-  let [ neutral, setNeutral ] = useState(0);
-  let [bad, setBad ] = useState(0);
+  let [good, setGood] = useState(0);
+  let [neutral, setNeutral] = useState(0);
+  let [bad, setBad] = useState(0);
 
   const generateOnClick = (value, setter) => {
     return () => { setter(value + 1) };
@@ -58,7 +65,7 @@ const App = () => {
       <Title name="give feedback" />
       <FeedbackButtons onClickHandlers={onClicks} />
       <Title name="statistics" />
-      <Stats counts={{good: good, neutral: neutral, bad: bad}} />
+      <Stats counts={{ good: good, neutral: neutral, bad: bad }} />
     </>
   );
 };
