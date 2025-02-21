@@ -27,12 +27,9 @@ const App = () => {
   };
 
   const getMostVotedAnecdote = () => {
-    let mostVotes = 0;
-    for (let i = 0; i < anecdotes.length - 1; i++) {
-      if (votes[mostVotes] < votes[i]) {
-        mostVotes = i;
-      }
-    }
+    const mostVotes = votes.reduce((mostVotes, value, index) => {
+      return value > votes[mostVotes] ? index : mostVotes;
+    }, 0);
     return anecdotes[mostVotes];
   };
 
