@@ -1,35 +1,10 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
-const Filter = ({ searchFilter, handleSearchFilterChange }) => {
-  return (
-    <div>
-      filter shown with <input value={searchFilter} onChange={handleSearchFilterChange} />
-    </div>
-  );
-};
+import Person from './components/Person';
+import PersonForm from './components/PersonForm';
+import Filter from './components/Filter';
 
-const Person = ({name, number}) => {
-  return (
-    <p>{name} {number}</p>
-  )
-};
-
-const PersonForm = ({newName, newNumber, handleNameChange, handleNumberChange, handleAdd}) => {
-  return (
-    <form>
-      <div>
-        name: <input value={newName} onChange={handleNameChange} />
-      </div>
-      <div>
-        number: <input value={newNumber} onChange={handleNumberChange} />
-      </div>
-      <div>
-        <button type="submit" onClick={handleAdd}>add</button>
-      </div>
-    </form>
-  )
-}
+import phonebook from './services/phonebook';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -39,8 +14,9 @@ const App = () => {
   const [searchFilter, setSearchFilter] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(response.data);
+    phonebook.getPersons().then((initialPersons) => {
+      console.log(initialPersons);
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -50,7 +26,10 @@ const App = () => {
     if (persons.some((person) => person.name == newName)) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber, id: persons.length + 1 }));
+      phonebook.newPerson({name: newName, number: newNumber}).then((newPerson) => {
+        const newPersons = persons.concat(newPerson);
+        setPersons(newPersons);
+      });
     }
 
     setNewName('');
