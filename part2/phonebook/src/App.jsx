@@ -23,10 +23,23 @@ const App = () => {
   const handleAdd = (event) => {
     event.preventDefault();
 
-    if (persons.some((person) => person.name == newName)) {
-      alert(`${newName} is already added to phonebook`);
+    const foundIndex = persons.findIndex((elem) => elem.name === newName);
+    if (foundIndex >= 0) {
+      if (persons[foundIndex].number !== newNumber) {
+        const response = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+        if (response) {
+          const updatedPerson = {...persons[foundIndex], number: newNumber};
+          phonebook.updatePerson(updatedPerson).then((response) => {
+            const newPersons = persons.slice();
+            newPersons[foundIndex] = updatedPerson;
+            setPersons(newPersons);
+          });
+        }
+      } else {
+        alert(`${newName} is already added to phonebook`);
+      }
     } else {
-      phonebook.newPerson({name: newName, number: newNumber}).then((newPerson) => {
+      phonebook.newPerson({ name: newName, number: newNumber }).then((newPerson) => {
         const newPersons = persons.concat(newPerson);
         setPersons(newPersons);
       });
@@ -48,10 +61,25 @@ const App = () => {
     setSearchFilter(event.target.value);
   }
 
+  const deletePersonFactory = (id, name) => {
+    return () => {
+      const result = window.confirm(`Delete ${name}?`);
+
+      if (result) {
+        phonebook.deletePerson(id).then(() => {
+          const newPersons = persons.slice();
+          const deletedIndex = newPersons.findIndex((val) => val.id === id);
+          newPersons.splice(deletedIndex, 1);
+          setPersons(newPersons);
+        });
+      }
+    };
+  };
+
   const filteredPersons = persons.filter((person) => person.name.toLocaleLowerCase().includes(searchFilter));
 
   const personComponents = filteredPersons.map((person) => {
-    return <Person name={person.name} number={person.number} key={person.id} />;
+    return <Person name={person.name} number={person.number} key={person.id} deletePerson={deletePersonFactory(person.id, person.name)} />;
   });
 
   return (
@@ -59,7 +87,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter searchFilter={searchFilter} handleSearchFilterChange={handleSearchFilterChange} />
       <h2>add a new</h2>
-      <PersonForm newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} handleAdd={handleAdd}/>
+      <PersonForm newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} handleAdd={handleAdd} />
       <h2>Numbers</h2>
       {personComponents}
     </div>

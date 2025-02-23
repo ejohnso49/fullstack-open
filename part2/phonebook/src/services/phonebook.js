@@ -14,7 +14,17 @@ const newPerson = (newPerson) => {
   });
 }
 
+const updatePerson = (update) => {
+  return axios.put(`${serviceUrl}/${update.id}`, update);
+};
+
+const deletePerson = (id) => {
+  return axios.delete(`${serviceUrl}/${id}`);
+}
+
 export default {
   getPersons,
   newPerson,
+  deletePerson,
+  updatePerson,
 };
