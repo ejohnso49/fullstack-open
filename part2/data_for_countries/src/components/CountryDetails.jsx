@@ -1,18 +1,22 @@
-const CountryDetails = ({country, capital, area, languages, flag}) => {
+const CountryDetails = ({countryInfo}) => {
+  if (!countryInfo) {
+    return null;
+  }
+
   return (
     <div>
-      <h1>{country}</h1>
+      <h1>{countryInfo.name.common}</h1>
       <div>
-        <p>Capital {capital}</p>
-        <p>Area {area}</p>
+        <p>Capital {countryInfo.capital[0]}</p>
+        <p>Area {countryInfo.area}</p>
       </div>
       <h1>Languages</h1>
       <div>
         <ul>
-          {languages.map((language, index) => <li key={index}>{language}</li>)}
+          {Object.values(countryInfo.languages).map((language, index) => <li key={index}>{language}</li>)}
         </ul>
       </div>
-      <img src={flag} />
+      <img src={countryInfo.flags.png} />
     </div>
   )
 }

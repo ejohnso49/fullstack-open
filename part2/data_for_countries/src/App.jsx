@@ -8,6 +8,7 @@ import countriesApi from './services/countries';
 const App = () => {
   const [searchString, setSearchString] = useState('');
   const [countries, setCountries] = useState([]);
+  const [countryInfo, setCountryInfo] = useState(undefined);
 
   useEffect(() => {
     countriesApi.getAll().then(data =>
@@ -17,8 +18,14 @@ const App = () => {
 
   const handleSearchStringChange = (event) => {
     setSearchString(event.target.value);
+    setCountryInfo(undefined);
   }
 
+  const handleShowCountryClick = (countryName) => {
+    const countryInfo = countries.find(country => country.name.common === countryName);
+    setCountryInfo(countryInfo);
+    setSearchString('');
+  }
 
   let matches;
   if (searchString !== '') {
@@ -30,16 +37,16 @@ const App = () => {
     matches = [];
   }
 
-  let countryInfo = undefined;
-  if (matches.length == 1) {
-    const info = matches[0]
-    countryInfo = <CountryDetails country={info.name.common} capital={info.capital[0]} area={info.area} languages={Object.values(info.languages)} flag={info.flags.png} />;
-  }
+
 
   return (
     <div>
-      <Search onChange={handleSearchStringChange} />
-      {countryInfo ? countryInfo : <SearchMatches matches={matches.map((country) => country.name.common)} />}
+      <Search onChange={handleSearchStringChange} searchString={searchString} />
+      {
+        countryInfo ?
+        <CountryDetails countryInfo={countryInfo} /> :
+        <SearchMatches matches={matches.map(match => match.name.common)} onClick={handleShowCountryClick} />
+      }
     </div>
   );
 };
