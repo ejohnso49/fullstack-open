@@ -1,4 +1,8 @@
-const CountryDetails = ({countryInfo}) => {
+const getWeatherImgUrl = (iconName) => {
+  return `https://openweathermap.org/img/wn/${iconName}@2x.png`;
+};
+
+const CountryDetails = ({countryInfo, weatherInfo}) => {
   if (!countryInfo) {
     return null;
   }
@@ -17,6 +21,14 @@ const CountryDetails = ({countryInfo}) => {
         </ul>
       </div>
       <img src={countryInfo.flags.png} />
+      <div>
+        <h1>Weather in {countryInfo.capital[0]}</h1>
+        <div>
+          <p>Temperature {weatherInfo.main.temp} K</p>
+          <img src={getWeatherImgUrl(weatherInfo.weather[0].icon)} />
+          <p>Wind {weatherInfo.wind.speed} m/s</p>
+        </div>
+      </div>
     </div>
   )
 }

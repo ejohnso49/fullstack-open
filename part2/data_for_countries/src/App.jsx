@@ -4,11 +4,13 @@ import Search from './components/Search';
 import SearchMatches from './components/SearchMatches';
 import CountryDetails from './components/CountryDetails';
 import countriesApi from './services/countries';
+import getWeather from './services/weather';
 
 const App = () => {
   const [searchString, setSearchString] = useState('');
   const [countries, setCountries] = useState([]);
   const [countryInfo, setCountryInfo] = useState(undefined);
+  const [weatherInfo, setWeatherInfo] = useState(undefined);
 
   useEffect(() => {
     countriesApi.getAll().then(data =>
@@ -22,8 +24,12 @@ const App = () => {
   }
 
   const handleShowCountryClick = (countryName) => {
-    const countryInfo = countries.find(country => country.name.common === countryName);
-    setCountryInfo(countryInfo);
+    const newCountryInfo = countries.find(country => country.name.common === countryName);
+    getWeather(newCountryInfo.capitalInfo.latlng[0], newCountryInfo.capitalInfo.latlng[1]).then(newWeatherInfo => {
+      setCountryInfo(newCountryInfo);
+      setWeatherInfo(newWeatherInfo);
+    });
+
     setSearchString('');
   }
 
@@ -44,8 +50,8 @@ const App = () => {
       <Search onChange={handleSearchStringChange} searchString={searchString} />
       {
         countryInfo ?
-        <CountryDetails countryInfo={countryInfo} /> :
-        <SearchMatches matches={matches.map(match => match.name.common)} onClick={handleShowCountryClick} />
+          <CountryDetails countryInfo={countryInfo} weatherInfo={weatherInfo} /> :
+          <SearchMatches matches={matches.map(match => match.name.common)} onClick={handleShowCountryClick} />
       }
     </div>
   );
