@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 if (process.env.MONGODB_CONNECTION_STRING === undefined) {
-  console.log('Missing connection string definition in .env');
+  console.log("Missing connection string definition in .env");
   process.exit(1);
 }
 
 const url = process.env.MONGODB_CONNECTION_STRING;
 
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 
 mongoose.connect(url);
 
@@ -17,7 +17,7 @@ const noteSchema = new mongoose.Schema({
   important: Boolean,
 });
 
-const Note = mongoose.model('Note', noteSchema);
+const Note = mongoose.model("Note", noteSchema);
 
 // const note = new Note({
 //   content: 'Arpan be training',
