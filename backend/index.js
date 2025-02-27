@@ -29,14 +29,15 @@ app.get('/api/notes', (request, response) => {
 
 app.get('/api/notes/:id', (request, response, next) => {
   const id = request.params.id;
-  Note.findById(id).then(note => {
-    if (note) {
-      response.json(note);
-    } else {
-      response.status(404).end();
-    }
-  })
-  .catch(error => next(error));
+  Note.findById(id)
+    .then(note => {
+      if (note) {
+        response.json(note);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch(error => next(error));
 });
 
 app.delete('/api/notes/:id', (request, response, next) => {
@@ -60,10 +61,11 @@ app.post('/api/notes', (request, response, next) => {
     important: body.important || false,
   });
 
-  note.save().then(result => {
-    response.json(result);
-  })
-  .catch(error => next(error));
+  note.save()
+    .then(result => {
+      response.json(result);
+    })
+    .catch(error => next(error));
 });
 
 app.put('/api/notes/:id', (request, response, next) => {
