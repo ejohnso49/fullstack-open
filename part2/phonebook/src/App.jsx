@@ -56,11 +56,15 @@ const App = () => {
         alert(`${newName} is already added to phonebook`);
       }
     } else {
-      phonebook.newPerson({ name: newName, number: newNumber }).then((newPerson) => {
-        const newPersons = persons.concat(newPerson);
-        setPersons(newPersons);
-        updateStatus(`Added ${newName}`, false);
-      });
+      phonebook.newPerson({ name: newName, number: newNumber })
+        .then((newPerson) => {
+          const newPersons = persons.concat(newPerson);
+          setPersons(newPersons);
+          updateStatus(`Added ${newName}`, false);
+        })
+        .catch(error => {
+          updateStatus(error.response.data.error, true);
+        });
     }
 
     setNewName('');
