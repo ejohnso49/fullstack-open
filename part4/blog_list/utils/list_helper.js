@@ -42,9 +42,31 @@ const mostBlogs = (blogs) => {
   }, { author: "", blogs: 0 });
 };
 
+const mostLikes = (blogs) => {
+  if (blogs.length < 1) {
+    return undefined;
+  }
+
+  const likesMap = blogs.reduce((currentMap, blog) => {
+    const currentLikes = currentMap[blog.author] || 0;
+    currentMap[blog.author] = currentLikes + blog.likes;
+    return currentMap;
+  }, {});
+
+  return Object.keys(likesMap).reduce((currentMax, author) => {
+    if (likesMap[author] > currentMax.likes) {
+      currentMax.author = author;
+      currentMax.likes = likesMap[author];
+    }
+
+    return currentMax;
+  }, { author: "", likes: 0 });
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };

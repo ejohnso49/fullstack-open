@@ -205,3 +205,74 @@ describe("mostBlogs", () => {
     assert.deepStrictEqual(result, { author: blogsMultiPostAuthors[0].author, blogs: 2 });
   });
 });
+
+describe("mostLikes", () => {
+  const blogsSingleMostLikes = [
+    {
+      _id: "5a422aa71b54a676234d17f8",
+      title: "Go To Statement Considered Harmful",
+      author: "Edsger W. Dijkstra",
+      url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+      likes: 11,
+      __v: 0,
+    },
+    {
+      _id: "5a422aa71b523676234d17f8",
+      title: "Go Harm",
+      author: "Ed W. Dijkstra",
+      url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+      likes: 5,
+      __v: 0,
+    },
+    {
+      _id: "5a4223a71b523676234d17f8",
+      title: "Go To d Harmful",
+      author: "Edsger W. Dijkstra",
+      url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+      likes: 3,
+      __v: 0,
+    },
+  ];
+
+  const blogsMultipleMostLikes = [
+    {
+      _id: "5a422aa71b54a676234d17f8",
+      title: "Go To Statement Considered Harmful",
+      author: "Edsger W. Dijkstra",
+      url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+      likes: 2,
+      __v: 0,
+    },
+    {
+      _id: "5a422aa71b523676234d17f8",
+      title: "Go Harm",
+      author: "Ed W. Dijkstra",
+      url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+      likes: 5,
+      __v: 0,
+    },
+    {
+      _id: "5a4223a71b523676234d17f8",
+      title: "Go To d Harmful",
+      author: "Edsger W. Dijkstra",
+      url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+      likes: 3,
+      __v: 0,
+    },
+  ];
+
+  test("returns undefined for empty list", () => {
+    const result = listHelper.mostLikes([]);
+    assert.strictEqual(result, undefined);
+  });
+
+  test("returns author with most likes", () => {
+    const result = listHelper.mostLikes(blogsSingleMostLikes);
+    assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", likes: 14 });
+  });
+
+  test("returns the first author with most likes", () => {
+    const result = listHelper.mostLikes(blogsMultipleMostLikes);
+    assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", likes: 5 });
+  });
+});
