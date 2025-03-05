@@ -6,12 +6,12 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist/ && cd ../notes-frontend && npm run build && cp -r dist ../backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --test"
   },
   "author": "Eric Johnson",
   "license": "Apache-2.0",
@@ -26,6 +26,7 @@
     "@flydotio/dockerfile": "^0.7.8",
     "@stylistic/eslint-plugin-js": "^4.1.0",
     "eslint": "^9.21.0",
+    "eslint-config-ejohnso49": "github:ejohnso49/eslint-config-ejohnso49",
     "globals": "^16.0.0"
   }
 }
