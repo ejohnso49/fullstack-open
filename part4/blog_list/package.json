@@ -4,7 +4,7 @@
   "description": "A simple app to vote on blog posts",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "lint": "eslint .",
     "dev": "node index.js --watch",
     "start": "node index.js"
