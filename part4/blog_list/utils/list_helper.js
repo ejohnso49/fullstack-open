@@ -28,7 +28,6 @@ const mostBlogs = (blogs) => {
   const blogCountMap = blogs.reduce((blogCount, blog) => {
     const currentCount = blogCount[blog.author] || 0;
     blogCount[blog.author] = currentCount + 1;
-    console.log(`${blog.author}: ${blogCount[blog.author]}`);
     return blogCount;
   }, {});
 
