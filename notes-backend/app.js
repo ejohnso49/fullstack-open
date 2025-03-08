@@ -3,11 +3,13 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
+// This must be included before importing controllers
+require("express-async-errors");
+
+const app = express();
 const notesRouter = require("./controllers/notes");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
-
-const app = express();
 
 mongoose.set("strictQuery", false);
 
@@ -17,7 +19,7 @@ mongoose.connect(config.MONGODB_CONNECTION_STRING)
   .then(() => {
     logger.info("connected to MongoDB");
   })
-  .catch(error => {
+  .catch((error) => {
     logger.error("error connecting to MongoDB:", error.message);
   });
 
