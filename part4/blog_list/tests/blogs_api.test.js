@@ -51,6 +51,35 @@ describe("posting blogs", async () => {
     assert.strictEqual(blogs.length, initialBlogs.length + 1);
     assert(titles.includes("Joe Baloneyies"));
   });
+
+  test("post without likes defaults to 0", async () => {
+    const newBlog = {
+      author: "Big Dummy",
+      title: "A Big One",
+      url: "big.dummy.com",
+    };
+
+    const response = await api.post("/api/blogs").send(newBlog);
+    assert.strictEqual(response.body.likes, 0);
+  });
+
+  test("posts without titles return 400", async () => {
+    const newBlog = {
+      author: "An author",
+      url: "meaningless.com",
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(400);
+  });
+
+  test("posts without url return 400", async () => {
+    const newBlog = {
+      author: "Another author",
+      title: "Missing URL",
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(400);
+  });
 });
 
 after(async () => {
