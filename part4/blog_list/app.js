@@ -12,8 +12,6 @@ app.use("/api/blogs", blogsRouter);
 
 mongoose.set("strictQuery", false);
 
-logger.info("Connecting to", config.MONGODB_CONNECTION_STRING);
-
 mongoose.connect(config.MONGODB_CONNECTION_STRING)
   .then(() => {
     logger.info("connected to MongoDB");

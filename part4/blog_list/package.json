@@ -4,10 +4,10 @@
   "description": "A simple app to vote on blog posts",
   "main": "index.js",
   "scripts": {
-    "test": "node --test",
+    "test": "cross-env NODE_ENV=test node --test",
     "lint": "eslint .",
-    "dev": "node index.js --watch",
-    "start": "node index.js"
+    "dev": "cross-env NODE_ENV=develop node index.js --watch",
+    "start": "cross-env NODE_ENV=production node index.js"
   },
   "author": "Eric Johnson",
   "license": "Apache-2.0",
@@ -16,10 +16,12 @@
     "@stylistic/eslint-plugin": "^4.1.0",
     "eslint": "^9.21.0",
     "eslint-config-ejohnso49": "github:ejohnso49/eslint-config-ejohnso49",
-    "globals": "^16.0.0"
+    "globals": "^16.0.0",
+    "supertest": "^7.0.0"
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.11.0"
