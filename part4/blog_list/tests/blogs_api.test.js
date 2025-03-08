@@ -82,6 +82,18 @@ describe("posting blogs", async () => {
   });
 });
 
+describe("deleting blogs", () => {
+  test("succeeds with 204 when id is valid", async () => {
+    const blogs = await getBlogsFromDb();
+    const deleteId = blogs[0].id;
+
+    await api.delete(`/api/blogs/${deleteId}`).expect(204);
+    const blogsAfter = await getBlogsFromDb();
+
+    assert.strictEqual(blogsAfter.length, blogs.length - 1);
+  });
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
