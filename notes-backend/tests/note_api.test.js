@@ -1,14 +1,16 @@
-const { describe, test, after, beforeEach } = require("node:test");
+const { describe, test, after, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
+const bcrypt = require("bcrypt");
 const app = require("../app");
 const Note = require("../models/note");
+const User = require("../models/user");
 const helper = require("./tests_helper");
 
 const api = supertest(app);
 
-describe("when there are some notes saved initially", () => {
+describe("when there are some notes saved initially", async () => {
   beforeEach(async () => {
     await Note.deleteMany({});
     await Note.insertMany(helper.initialNotes);
@@ -36,7 +38,7 @@ describe("when there are some notes saved initially", () => {
   });
 });
 
-describe("viewing a specific note", () => {
+describe("viewing a specific note", async () => {
   test("succeeds with a valid id", async () => {
     const notesAtStart = await helper.notesInDb();
 
@@ -62,19 +64,36 @@ describe("viewing a specific note", () => {
   });
 });
 
-describe("addition of a new note", () => {
+describe("addition of a new note", async () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    const passwordHash = await bcrypt.hash("sekret", 10);
+    const user = new User({ name: "Test", username: "root", passwordHash });
+    await user.save();
+  });
+
+  afterEach(async () => {
+    const sleepPromise = new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+    await sleepPromise;
+  });
+
   test("succeeds with valid data", async () => {
+    const users = await helper.usersInDb();
     const newNote = {
       content: "async/await simplifies making async calls",
       important: true,
+      userId: users[0].id,
     };
 
     await api.post("/api/notes")
       .send(newNote)
       .expect(201)
       .expect("Content-Type", /application\/json/);
-    const notesAtEnd = await helper.notesInDb();
 
+    const notesAtEnd = await helper.notesInDb();
     assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1);
 
     const contents = notesAtEnd.map(n => n.content);

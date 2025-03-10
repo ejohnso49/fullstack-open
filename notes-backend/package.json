@@ -16,6 +16,7 @@
   "author": "Eric Johnson",
   "license": "Apache-2.0",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
