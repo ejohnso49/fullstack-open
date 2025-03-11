@@ -7,6 +7,7 @@ const app = require("../app");
 const Note = require("../models/note");
 const User = require("../models/user");
 const helper = require("./tests_helper");
+const getToken = require("../utils/token");
 
 const api = supertest(app);
 
@@ -66,6 +67,12 @@ describe("viewing a specific note", async () => {
 
 describe("addition of a new note", async () => {
   beforeEach(async () => {
+    const sleepPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 2000);
+    });
+    await sleepPromise;
     await User.deleteMany({});
 
     const passwordHash = await bcrypt.hash("sekret", 10);
@@ -73,23 +80,19 @@ describe("addition of a new note", async () => {
     await user.save();
   });
 
-  afterEach(async () => {
-    const sleepPromise = new Promise((resolve) => {
-      setTimeout(resolve, 1000);
-    });
-    await sleepPromise;
-  });
-
   test("succeeds with valid data", async () => {
     const users = await helper.usersInDb();
+    const testUser = users[0];
     const newNote = {
       content: "async/await simplifies making async calls",
       important: true,
-      userId: users[0].id,
+      userId: testUser.id,
     };
 
+    const token = getToken({ username: testUser.username, id: testUser.id });
     await api.post("/api/notes")
       .send(newNote)
+      .set("Authorization", `Bearer ${token}`)
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
@@ -101,14 +104,20 @@ describe("addition of a new note", async () => {
   });
 
   test("fails with statuscode 400 if data is invalid", async () => {
+    const notesAtStart = await helper.notesInDb();
+    const users = await helper.usersInDb();
+    const testUser = users[0];
+    const token = getToken({ username: testUser.username, id: testUser.id });
     const newNote = {
       important: true,
     };
 
-    await api.post("/api/notes").send(newNote).expect(400);
+    await api.post("/api/notes").send(newNote)
+      .set("Authorization", `Bearer ${token}`)
+      .expect(400);
 
     const notesAtEnd = await helper.notesInDb();
-    assert(notesAtEnd);
+    assert.deepStrictEqual(notesAtEnd, notesAtStart);
   });
 });
 

@@ -11,21 +11,18 @@ const api = supertest(app);
 
 describe("addition of a user", () => {
   beforeEach(async () => {
+    const sleepPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 2000);
+    });
+    await sleepPromise;
     await User.deleteMany({});
 
     const passwordHash = await bcrypt.hash("sekret", 10);
     const user = new User({ username: "root", passwordHash });
 
     await user.save();
-  });
-
-  afterEach(async () => {
-    const sleepPromise = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 1000);
-    });
-    await sleepPromise;
   });
 
   test("creation succeeds with new username", async () => {
