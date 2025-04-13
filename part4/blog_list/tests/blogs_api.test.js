@@ -5,13 +5,23 @@ const assert = require("node:assert");
 const app = require("../app");
 const Blog = require("../models/blogs");
 const { initialBlogs, getBlogsFromDb } = require("./test_helper");
+const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
 const api = supertest(app);
 
+let testUser = undefined;
+
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await User.deleteMany({});
+
+  const passwordHash = await bcrypt.hash("sekret", 10);
+  testUser = new User({ username: "blogTest", passwordHash, name: "Test User" });
+  await testUser.save();
+
   for (let i = 0; i < initialBlogs.length; i++) {
-    const blog = new Blog(initialBlogs[i]);
+    const blog = new Blog({ ...initialBlogs[i], user: testUser.id });
     await blog.save();
   }
 });
@@ -33,6 +43,13 @@ describe("getting blog posts", async () => {
     assert.strictEqual(typeof response.body[0].id, "string");
     assert.strictEqual(response.body[0]._id, undefined);
   });
+
+  test("returns a user associated with the blogs", async () => {
+    const response = await api.get("/api/blogs");
+    const blog = response.body[0];
+    console.log(response.body);
+    assert.deepStrictEqual(blog.user, { username: testUser.username, id: testUser.id, name: testUser.name });
+  });
 });
 
 describe("posting blogs", async () => {
@@ -42,6 +59,7 @@ describe("posting blogs", async () => {
       title: "Joe Baloneyies",
       url: "joe.baloney.example.com",
       likes: 10,
+      user: testUser.id,
     };
 
     await api.post("/api/blogs").send(newBlog).expect(201).expect("Content-Type", /application\/json/);
@@ -57,6 +75,7 @@ describe("posting blogs", async () => {
       author: "Big Dummy",
       title: "A Big One",
       url: "big.dummy.com",
+      user: testUser.id,
     };
 
     const response = await api.post("/api/blogs").send(newBlog);
@@ -67,6 +86,7 @@ describe("posting blogs", async () => {
     const newBlog = {
       author: "An author",
       url: "meaningless.com",
+      user: testUser.id,
     };
 
     await api.post("/api/blogs").send(newBlog).expect(400);
@@ -76,6 +96,7 @@ describe("posting blogs", async () => {
     const newBlog = {
       author: "Another author",
       title: "Missing URL",
+      user: testUser.id,
     };
 
     await api.post("/api/blogs").send(newBlog).expect(400);

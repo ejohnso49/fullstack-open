@@ -4,7 +4,7 @@
   "description": "A simple app to vote on blog posts",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test node --test",
+    "test": "cross-env NODE_ENV=test node --test --test-concurrency 1",
     "lint": "eslint .",
     "dev": "cross-env NODE_ENV=develop node index.js --watch",
     "start": "cross-env NODE_ENV=production node index.js"

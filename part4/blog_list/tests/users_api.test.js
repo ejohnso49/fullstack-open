@@ -11,12 +11,6 @@ const api = supertest(app);
 
 describe("addition of a user", () => {
   beforeEach(async () => {
-    const sleepPromise = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 2000);
-    });
-    await sleepPromise;
     await User.deleteMany({});
 
     const passwordHash = await bcrypt.hash("sekret", 10);
