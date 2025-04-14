@@ -21,7 +21,7 @@ beforeEach(async () => {
   await testUser.save();
 
   for (let i = 0; i < initialBlogs.length; i++) {
-    const blog = new Blog({ ...initialBlogs[i], user: testUser.id });
+    const blog = new Blog({ ...initialBlogs[i], user: testUser._id });
     await blog.save();
   }
 });
@@ -47,7 +47,6 @@ describe("getting blog posts", async () => {
   test("returns a user associated with the blogs", async () => {
     const response = await api.get("/api/blogs");
     const blog = response.body[0];
-    console.log(response.body);
     assert.deepStrictEqual(blog.user, { username: testUser.username, id: testUser.id, name: testUser.name });
   });
 });
@@ -118,8 +117,13 @@ describe("deleting blogs", () => {
 describe("updating blogs", () => {
   test("succeeds when id is valid", async () => {
     const blogs = await getBlogsFromDb();
+    const { title, url, author, id, user: { id: userId } } = blogs[0];
     const newBlog = {
-      ...blogs[0],
+      id,
+      title,
+      url,
+      author,
+      userId,
       likes: 5000,
     };
 

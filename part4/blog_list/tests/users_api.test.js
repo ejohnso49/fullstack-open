@@ -5,6 +5,7 @@ const supertest = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
 const User = require("../models/user");
+const Blog = require("../models/blogs");
 const helper = require("./test_helper");
 
 const api = supertest(app);
@@ -12,11 +13,18 @@ const api = supertest(app);
 describe("addition of a user", () => {
   beforeEach(async () => {
     await User.deleteMany({});
+    await Blog.deleteMany({});
 
     const passwordHash = await bcrypt.hash("sekret", 10);
     const user = new User({ username: "root", passwordHash });
-
     await user.save();
+
+    for (let i = 0; i < helper.initialBlogs.length; i++) {
+      const blog = new Blog({ ...helper.initialBlogs[i], user: user.id });
+      await blog.save();
+      user.blogs = user.blogs.concat(blog._id);
+      await user.save();
+    }
   });
 
   test("creation succeeds with new username", async () => {
